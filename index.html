@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Baran & Furkan — Genç Girişimciler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  /* Baran tarafı */
+  --cream:      #F7F3EC;
+  --cream-dark: #EDE7DB;
+  --orange:     #E76F51;
+  --orange-dim: rgba(231,111,81,0.15);
+
+  /* Furkan tarafı */
+  --navy:       #0B1526;
+  --navy-2:     #111F35;
+  --gold:       #B8922A;
+  --gold-lt:    #D4AA4A;
+  --gold-dim:   rgba(184,146,42,0.18);
+
+  /* Ortak */
+  --green:      #2D6A4F;
+  --green-lt:   #52B788;
+  --ink:        #1C1C2E;
+  --ink-soft:   #3B3B52;
+  --border-l:   rgba(28,28,46,0.10);
+  --border-d:   rgba(184,146,42,0.2);
+
+  --split: 50%;
+}
+
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.7;}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 5vw;
+  background:rgba(11,21,38,0.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border-d);
+}
+.nav-wordmark{
+  font-family:'Cinzel',serif;
+  font-weight:900;font-size:0.85rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--gold-lt);text-decoration:none;
+  display:flex;align-items:center;gap:0.55rem;
+}
+.nav-wordmark .amp{
+  color:var(--green-lt);
+  font-size:1.05rem;
+}
+.nav-links{display:flex;gap:1.8rem;list-style:none;}
+.nav-links a{
+  text-decoration:none;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;
+  color:rgba(247,243,236,0.55);transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--green-lt);}
+
+/* ─── HERO SPLIT ─── */
+#hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:var(--split) 1fr;
+  position:relative;
+  overflow:hidden;
+  cursor:crosshair;
+}
+
+/* Baran yarısı */
+.hero-baran{
+  background:var(--cream);
+  position:relative;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:8rem 5vw 5rem 5vw;
+  overflow:hidden;
+}
+.hero-baran-lines{
+  position:absolute;inset:0;
+  background-image:repeating-linear-gradient(
+    transparent,transparent 34px,
+    var(--cream-dark) 34px,var(--cream-dark) 35px
+  );
+  opacity:0.45;pointer-events:none;
+}
+.hero-baran-content{position:relative;z-index:2;}
+
+/* Furkan yarısı */
+.hero-furkan{
+  background:var(--navy);
+  position:relative;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:8rem 5vw 5rem 5vw;
+  overflow:hidden;
+}
+#map-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0.45;pointer-events:none;
+}
+.hero-furkan-content{position:relative;z-index:2;}
+
+/* Kesim çizgisi */
+.split-line{
+  position:absolute;top:0;bottom:0;
+  left:var(--split);
+  width:2px;
+  background:linear-gradient(180deg,transparent,var(--green-lt) 20%,var(--green-lt) 80%,transparent);
+  z-index:10;
+  transform:translateX(-50%);
+  transition:left 0.05s linear;
+}
+.split-dot{
+  position:absolute;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--green-lt);
+  left:50%;transform:translate(-50%,-50%);
+  top:50%;
+  box-shadow:0 0 0 4px rgba(82,183,136,0.25);
+}
+
+/* Orta amblem */
+.center-badge{
+  position:absolute;
+  left:var(--split);top:50%;
+  transform:translate(-50%,-50%);
+  z-index:20;
+  width:72px;height:72px;
+  border-radius:50%;
+  background:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  border:3px solid var(--cream);
+  transition:left 0.05s linear;
+}
+.center-badge-inner{
+  font-family:'Cinzel',serif;
+  font-weight:900;font-size:0.75rem;
+  letter-spacing:0.1em;
+  color:#fff;
+  text-align:center;
+  line-height:1.3;
+}
+
+/* Hero tipografi — Baran */
+.hero-eyebrow-b{
+  font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--green);font-weight:500;
+  display:flex;align-items:center;gap:0.6rem;
+  margin-bottom:1.2rem;
+}
+.hero-eyebrow-b::before{content:'';display:block;width:1.8rem;height:2px;background:var(--green);}
+.name-b{
+  font-family:'Playfair Display',serif;
+  font-weight:800;font-size:clamp(2.2rem,4vw,3.8rem);
+  line-height:1.05;color:var(--ink);
+  margin-bottom:0.3rem;
+}
+.name-b em{font-style:italic;color:var(--orange);}
+.role-b{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-size:1rem;
+  color:var(--ink-soft);margin-bottom:1.5rem;min-height:1.6em;
+}
+
+/* Hero tipografi — Furkan */
+.hero-coord{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.14em;
+  color:var(--gold);opacity:0.75;
+  margin-bottom:1.2rem;
+}
+.blink{animation:blink 1.2s step-end infinite;color:var(--green-lt);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.name-f{
+  font-family:'Cinzel',serif;
+  font-weight:900;font-size:clamp(2.2rem,4vw,3.8rem);
+  line-height:1.05;color:#EEF2F7;
+  margin-bottom:0.3rem;letter-spacing:0.03em;
+}
+.name-f .acc{color:var(--gold-lt);}
+.role-f{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.92rem;color:var(--green-lt);
+  letter-spacing:0.06em;margin-bottom:1.5rem;min-height:1.6em;
+}
+.cursor-f{
+  display:inline-block;width:0.55em;height:0.95em;
+  background:var(--green-lt);margin-left:2px;
+  vertical-align:middle;animation:blink 0.9s step-end infinite;
+}
+
+/* Taglar */
+.hero-tags{display:flex;flex-wrap:wrap;gap:0.45rem;margin-bottom:1.8rem;}
+.tag-b{
+  font-size:0.72rem;font-weight:500;
+  padding:0.28rem 0.75rem;
+  border:1.5px solid var(--border-l);
+  border-radius:999px;color:var(--ink-soft);
+  transition:all 0.2s;
+}
+.tag-b:hover{border-color:var(--orange);color:var(--orange);}
+.tag-f{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;letter-spacing:0.07em;
+  padding:0.28rem 0.75rem;
+  border:1px solid var(--border-d);border-radius:2px;
+  color:rgba(200,212,224,0.6);
+  transition:all 0.2s;
+}
+.tag-f:hover{border-color:var(--green-lt);color:var(--green-lt);}
+
+/* Portfolio butonları */
+.portfolio-btn{
+  display:inline-flex;align-items:center;gap:0.55rem;
+  padding:0.75rem 1.6rem;
+  text-decoration:none;
+  font-size:0.84rem;font-weight:500;letter-spacing:0.04em;
+  border-radius:3px;
+  transition:all 0.22s;
+}
+.portfolio-btn-b{
+  background:var(--ink);color:var(--cream);
+}
+.portfolio-btn-b:hover{background:var(--green);}
+.portfolio-btn-f{
+  background:var(--gold);color:var(--navy);
+  font-family:'IBM Plex Sans',sans-serif;
+}
+.portfolio-btn-f:hover{background:var(--gold-lt);}
+.btn-arrow{font-size:0.9rem;}
+
+/* ─── ORTAK BÖLÜM: Hakkımızda ─── */
+#about{
+  background:var(--ink);
+  padding:7rem 5vw;
+  position:relative;overflow:hidden;
+}
+#about::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    -45deg,rgba(184,146,42,0.03) 0,rgba(184,146,42,0.03) 1px,
+    transparent 1px,transparent 12px
+  );
+  pointer-events:none;
+}
+.about-inner{position:relative;z-index:2;}
+.section-tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--green-lt);
+  display:flex;align-items:center;gap:0.7rem;
+  margin-bottom:0.75rem;
+}
+.section-tag::before{content:'//';font-weight:500;}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:700;line-height:1.15;
+  color:#EEF2F7;margin-bottom:0.8rem;
+}
+.section-title em{font-style:italic;color:var(--orange);}
+.section-sub{
+  font-size:1rem;color:rgba(200,212,224,0.6);
+  max-width:42rem;line-height:1.85;margin-bottom:3.5rem;
+}
+
+.about-duo{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2.5rem;
+}
+.about-card{
+  border-radius:6px;
+  padding:2.5rem;
+  position:relative;overflow:hidden;
+}
+.about-card-b{
+  background:var(--cream);
+  border-left:4px solid var(--orange);
+}
+.about-card-f{
+  background:var(--navy-2);
+  border:1px solid var(--border-d);
+  border-left:4px solid var(--gold);
+}
+.about-card-label{
+  font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:500;margin-bottom:0.5rem;
+}
+.about-card-label-b{color:var(--orange);}
+.about-card-label-f{
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--gold);
+}
+.about-card-name-b{
+  font-family:'Playfair Display',serif;
+  font-weight:800;font-size:1.5rem;
+  color:var(--ink);margin-bottom:1rem;
+}
+.about-card-name-f{
+  font-family:'Cinzel',serif;
+  font-weight:700;font-size:1.3rem;letter-spacing:0.06em;
+  color:#EEF2F7;margin-bottom:1rem;
+}
+.about-card p{font-size:0.93rem;line-height:1.75;margin-bottom:0.8rem;}
+.about-card-b p{color:var(--ink-soft);}
+.about-card-f p{color:rgba(200,212,224,0.75);}
+.about-bg-init{
+  position:absolute;bottom:-1.5rem;right:-1rem;
+  font-family:'Cinzel',serif;font-weight:900;
+  font-size:7rem;line-height:1;
+  opacity:0.05;pointer-events:none;
+  color:currentColor;
+}
+.about-card-b .about-bg-init{color:var(--orange);}
+.about-card-f .about-bg-init{color:var(--gold);}
+
+/* ─── ORTAK BÖLÜM: Vizyonlar ─── */
+#shared{
+  background:var(--cream);
+  padding:7rem 5vw;
+}
+.shared-header{text-align:center;margin-bottom:4rem;}
+.shared-header .section-tag{justify-content:center;color:var(--green);}
+.shared-header .section-title{color:var(--ink);}
+.shared-header em{color:var(--orange);}
+.shared-header .section-sub{color:var(--ink-soft);margin:0.5rem auto 0;}
+
+.shared-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;
+}
+.shared-card{
+  background:#fff;
+  border:1px solid var(--border-l);
+  border-radius:6px;
+  padding:2rem 1.75rem;
+  position:relative;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.shared-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(28,28,46,0.08);
+}
+.shared-card-num{
+  font-family:'Cinzel',serif;
+  font-size:0.7rem;letter-spacing:0.2em;
+  color:rgba(28,28,46,0.25);
+  margin-bottom:1rem;
+}
+.shared-card-icon{
+  font-size:2rem;margin-bottom:0.75rem;display:block;
+}
+.shared-card-title{
+  font-family:'Playfair Display',serif;
+  font-weight:700;font-size:1.15rem;
+  color:var(--ink);margin-bottom:0.6rem;
+  line-height:1.3;
+}
+.shared-card-text{
+  font-size:0.88rem;color:var(--ink-soft);line-height:1.7;
+}
+.shared-card-accent-b{border-top:3px solid var(--orange);}
+.shared-card-accent-f{border-top:3px solid var(--gold);}
+.shared-card-accent-g{border-top:3px solid var(--green);}
+
+/* ─── İLETİŞİM ─── */
+#contact{
+  background:var(--navy);
+  padding:7rem 5vw;
+  position:relative;overflow:hidden;
+}
+.contact-bg-text{
+  position:absolute;bottom:-2rem;left:-1rem;
+  font-family:'Cinzel',serif;font-weight:900;
+  font-size:clamp(6rem,15vw,14rem);
+  color:rgba(184,146,42,0.04);
+  pointer-events:none;white-space:nowrap;line-height:1;
+}
+.contact-inner{position:relative;z-index:2;}
+.contact-inner .section-title{margin-bottom:0.5rem;}
+.contact-inner .section-sub{margin-bottom:3rem;}
+
+.contact-duo{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2rem;
+}
+.contact-card{
+  border-radius:4px;padding:2rem;
+}
+.contact-card-b{
+  background:var(--cream);
+  border-left:4px solid var(--orange);
+}
+.contact-card-f{
+  background:var(--navy-2);
+  border:1px solid var(--border-d);
+  border-left:4px solid var(--gold);
+}
+.contact-name-b{
+  font-family:'Playfair Display',serif;
+  font-weight:800;font-size:1.2rem;
+  color:var(--ink);margin-bottom:1.5rem;
+}
+.contact-name-f{
+  font-family:'Cinzel',serif;
+  font-weight:700;font-size:1rem;letter-spacing:0.1em;
+  color:#EEF2F7;margin-bottom:1.5rem;
+}
+.contact-row{
+  display:flex;align-items:center;gap:0.7rem;
+  margin-bottom:0.85rem;
+  font-size:0.9rem;
+}
+.contact-icon{font-size:1.1rem;}
+.contact-row a{text-decoration:none;transition:opacity 0.2s;}
+.contact-row a:hover{opacity:0.75;}
+.contact-row-b a{color:var(--ink-soft);}
+.contact-row-f a{color:rgba(200,212,224,0.75);}
+
+/* ─── FOOTER ─── */
+footer{
+  background:var(--navy-2);
+  border-top:1px solid var(--border-d);
+  padding:2.5rem 5vw;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+}
+.footer-logo{
+  font-family:'Cinzel',serif;font-weight:900;
+  font-size:0.8rem;letter-spacing:0.2em;
+  color:var(--gold-lt);
+}
+.footer-logo .amp{color:var(--green-lt);}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(200,212,224,0.45);text-decoration:none;
+  transition:color 0.2s;
+}
+.footer-links a:hover{color:var(--green-lt);}
+.footer-copy{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.65rem;color:rgba(200,212,224,0.3);
+}
+
+/* ─── REVEAL ─── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  #hero{grid-template-columns:1fr;grid-template-rows:1fr 1fr;}
+  .split-line,.center-badge{display:none;}
+  .hero-baran,.hero-furkan{padding:7rem 7vw 4rem;}
+  .about-duo,.contact-duo,.shared-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .nav-links{display:none;}
+  .shared-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-wordmark">
+    BARAN <span class="amp">&</span> FURKAN
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Hakkımızda</a></li>
+    <li><a href="#shared">Vizyon</a></li>
+    <li><a href="#contact">İletişim</a></li>
+  </ul>
+</nav>
+
+<!-- HERO SPLIT -->
+<section id="hero">
+
+  <!-- Baran Yarısı -->
+  <div class="hero-baran">
+    <div class="hero-baran-lines"></div>
+    <div class="hero-baran-content">
+      <div class="hero-eyebrow-b">Genç Girişimci</div>
+      <h1 class="name-b">Baran <em>Ahmethan</em><br/>Kaya</h1>
+      <div class="role-b">
+        <span id="tw-baran"></span><span class="typewriter-cursor" style="background:var(--orange);"></span>
+      </div>
+      <div class="hero-tags">
+        <span class="tag-b">Girişimcilik</span>
+        <span class="tag-b">Yapay Zeka</span>
+        <span class="tag-b">Finans</span>
+        <span class="tag-b">Felsefe</span>
+      </div>
+      <a href="https://mrmerkus.github.io/p-tf-rly/" target="_blank" class="portfolio-btn portfolio-btn-b">
+        Portfolyoyu Gör <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Bölünme çizgisi + amblem -->
+  <div class="split-line"><div class="split-dot"></div></div>
+  <div class="center-badge">
+    <div class="center-badge-inner">B&F<br/>co.</div>
+  </div>
+
+  <!-- Furkan Yarısı -->
+  <div class="hero-furkan">
+    <canvas id="map-canvas"></canvas>
+    <div class="hero-furkan-content">
+      <div class="hero-coord">LAT 41.0082° N | LON 28.9784° E | <span class="blink">●</span> ONLINE</div>
+      <h1 class="name-f">FURKAN <span class="acc">ÇİLESİZ</span></h1>
+      <div class="role-f">
+        <span id="tw-furkan"></span><span class="cursor-f"></span>
+      </div>
+      <div class="hero-tags">
+        <span class="tag-f">Tarih</span>
+        <span class="tag-f">Jeopolitik</span>
+        <span class="tag-f">Bilişim</span>
+        <span class="tag-f">Kodlama</span>
+      </div>
+      <a href="https://furkancilesiz-skr.github.io/prof.dr./" target="_blank" class="portfolio-btn portfolio-btn-f">
+        Portfolyoyu Gör <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+</section>
+
+<!-- HAKKIMIZDA -->
+<section id="about">
+  <div class="about-inner reveal">
+    <span class="section-tag">Hakkımızda</span>
+    <h2 class="section-title">İki farklı dünya,<br/><em>tek bir vizyon</em></h2>
+    <p class="section-sub">Biri felsefe ve finansı düşünürken, diğeri tarihi ve kodu harmanlıyor. İkisi bir araya gelince ortaya güçlü bir sinerji çıkıyor.</p>
+
+    <div class="about-duo">
+
+      <div class="about-card about-card-b">
+        <div class="about-bg-init">BAK</div>
+        <div class="about-card-label about-card-label-b">Genç Girişimci · 16 Yaş</div>
+        <div class="about-card-name-b">Baran Ahmethan Kaya</div>
+        <p>Henüz 16 yaşında olmama rağmen girişimcilik, yapay zeka, yazılım ve finans gibi alanlarda küçük ama kararlı adımlar atıyorum.</p>
+        <p>Felsefeye olan ilgim beni derinlemesine düşündürüyor; büyük filozofların bilgeliğini günümüzün yapay zeka araçlarıyla harmanlıyorum. Geçmişin bilgeliği ve geleceğin teknolojisi — bu denge beni ben yapan şey.</p>
+      </div>
+
+      <div class="about-card about-card-f">
+        <div class="about-bg-init">FÇ</div>
+        <div class="about-card-label about-card-label-f">// Kurucu · 9. Sınıf</div>
+        <div class="about-card-name-f">FURKAN ÇİLESİZ</div>
+        <p style="color:rgba(200,212,224,0.75)">Orhan Cemal Fersoy Anadolu Lisesi öğrencisiyim; ama kafamdaki fikirler çoktan liseden çıktı, dünyayı dolaşmaya başladı.</p>
+        <p style="color:rgba(200,212,224,0.75)">Tarihe olan tutkum bana geçmişin döngülerini öğretti, dünya siyasetini takip etmek ise bu döngülerin bugün nasıl işlediğini. Kodlama ise benim dilim — düşündüklerimi somuta dönüştürdüğüm araç.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ORTAK VİZYON -->
+<section id="shared">
+  <div class="shared-header reveal">
+    <span class="section-tag">Ortak Hedeflerimiz</span>
+    <h2 class="section-title" style="color:var(--ink)">Birlikte <em>inşa</em> ediyoruz</h2>
+    <p class="section-sub" style="color:var(--ink-soft);margin:0.5rem auto 0;max-width:38rem;">Farklı yetkinliklerimizi tek bir çatı altında birleştiriyoruz: strateji, teknoloji ve insan.</p>
+  </div>
+
+  <div class="shared-grid reveal">
+    <div class="shared-card shared-card-accent-g">
+      <div class="shared-card-num">01 — ALTYAPI</div>
+      <span class="shared-card-icon">🤝</span>
+      <div class="shared-card-title">Tamamlayan Beceriler</div>
+      <p class="shared-card-text">Baran'ın finansal okuryazarlığı ve içerik üretim gücü, Furkan'ın teknik altyapısı ve jeopolitik analiziyle buluşuyor. Eksik parça yok.</p>
+    </div>
+    <div class="shared-card shared-card-accent-b">
+      <div class="shared-card-num">02 — İVME</div>
+      <span class="shared-card-icon">🚀</span>
+      <div class="shared-card-title">Erken Başlamak</div>
+      <p class="shared-card-text">Yaşın bir handikap değil, avantaj olduğuna inanıyoruz. Yanlış yapmaktan korkmayan iki genç; her hatadan büyüyoruz, her adımda öğreniyoruz.</p>
+    </div>
+    <div class="shared-card shared-card-accent-f">
+      <div class="shared-card-num">03 — HEDEF</div>
+      <span class="shared-card-icon">🌍</span>
+      <div class="shared-card-title">Ölçeklenebilir Girişim</div>
+      <p class="shared-card-text">Sadece iş kurmak değil, insanların hayatına dokunan, gerçek değer yaratan ve büyüyebilen bir yapı inşa etmek istiyoruz.</p>
+    </div>
+  </div>
+</section>
+
+<!-- İLETİŞİM -->
+<section id="contact">
+  <div class="contact-bg-text">B&F</div>
+  <div class="contact-inner reveal">
+    <span class="section-tag">İletişim</span>
+    <h2 class="section-title">Bir fikrin mi var? <em>Konuşalım.</em></h2>
+    <p class="section-sub">Ortaklık, proje fikri veya sadece merhaba demek için — her iki kapı da açık.</p>
+
+    <div class="contact-duo">
+      <div class="contact-card contact-card-b">
+        <div class="contact-name-b">Baran Ahmethan Kaya</div>
+        <div class="contact-row contact-row-b">
+          <span class="contact-icon">📧</span>
+          <a href="mailto:kayabaranahmethan@gmail.com">kayabaranahmethan@gmail.com</a>
+        </div>
+        <div class="contact-row contact-row-b">
+          <span class="contact-icon">📱</span>
+          <a href="tel:+905458742703">0545 874 27 03</a>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <a href="https://mrmerkus.github.io/p-tf-rly/" target="_blank" class="portfolio-btn portfolio-btn-b" style="font-size:0.8rem;padding:0.6rem 1.2rem;">
+            Portfolyoya Git →
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-card contact-card-f">
+        <div class="contact-name-f">FURKAN ÇİLESİZ</div>
+        <div class="contact-row contact-row-f">
+          <span class="contact-icon">📧</span>
+          <a href="mailto:furkancilesiz7890@gmail.com">furkancilesiz7890@gmail.com</a>
+        </div>
+        <div class="contact-row contact-row-f">
+          <span class="contact-icon">📱</span>
+          <a href="tel:+905516470432">0551 647 04 32</a>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <a href="https://furkancilesiz-skr.github.io/prof.dr./" target="_blank" class="portfolio-btn portfolio-btn-f" style="font-size:0.8rem;padding:0.6rem 1.2rem;">
+            Portfolyoya Git →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BARAN <span class="amp">&</span> FURKAN</div>
+  <div class="footer-links">
+    <a href="https://mrmerkus.github.io/p-tf-rly/" target="_blank">Baran'ın Portfolyosu</a>
+    <a href="https://furkancilesiz-skr.github.io/prof.dr./" target="_blank">Furkan'ın Portfolyosu</a>
+  </div>
+  <div class="footer-copy">© 2025 · Tüm hakları saklıdır</div>
+</footer>
+
+<script>
+/* ─── MAP CANVAS (Furkan yarısı) ─── */
+(function(){
+  const canvas = document.getElementById('map-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W,H,t=0;
+  function resize(){
+    W=canvas.width=canvas.offsetWidth;
+    H=canvas.height=canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,W,H); t+=0.003;
+    const mCount=10;
+    for(let i=0;i<=mCount;i++){
+      const x=(i/mCount)*W;
+      const a=0.05+0.025*Math.sin(t+i*0.4);
+      ctx.strokeStyle=`rgba(184,146,42,${a})`;
+      ctx.lineWidth=0.8;ctx.beginPath();
+      ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    }
+    const pCount=7;
+    for(let j=0;j<=pCount;j++){
+      const y=(j/pCount)*H;
+      const curve=18*Math.sin(Math.PI*(j/pCount));
+      const a=0.05+0.02*Math.sin(t*0.7+j*0.5);
+      ctx.strokeStyle=`rgba(184,146,42,${a})`;
+      ctx.lineWidth=0.8;ctx.beginPath();
+      ctx.moveTo(0,y+curve);ctx.quadraticCurveTo(W/2,y-curve,W,y+curve);ctx.stroke();
+    }
+    const dots=[{rx:0.15,ry:0.3},{rx:0.4,ry:0.45},{rx:0.7,ry:0.35},{rx:0.55,ry:0.65},{rx:0.25,ry:0.7}];
+    dots.forEach((d,i)=>{
+      const x=d.rx*W,y=d.ry*H;
+      const p=0.5+0.5*Math.sin(t*1.2+i*1.1);
+      const r=2+1.2*p;
+      ctx.strokeStyle=`rgba(82,183,136,${0.12*p})`;
+      ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,r*3,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle=`rgba(82,183,136,${0.5+0.5*p})`;
+      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ─── SPLIT LINE PARALLAX ─── */
+(function(){
+  const hero = document.getElementById('hero');
+  if(!hero) return;
+  const line = document.querySelector('.split-line');
+  const badge = document.querySelector('.center-badge');
+  hero.addEventListener('mousemove', e => {
+    const rect = hero.getBoundingClientRect();
+    const pct = ((e.clientX - rect.left) / rect.width) * 100;
+    const clamped = Math.max(35, Math.min(65, pct));
+    document.documentElement.style.setProperty('--split', clamped + '%');
+  });
+  hero.addEventListener('mouseleave', () => {
+    document.documentElement.style.setProperty('--split', '50%');
+  });
+})();
+
+/* ─── TYPEWRITER — Baran ─── */
+(function(){
+  const roles=['Girişimci & Problem Çözücü','Yapay Zeka Meraklısı','İçerik Üreticisi','Genç Finansçı','Felsefe Tutkunu'];
+  let ri=0,ci=0,del=false;
+  const el=document.getElementById('tw-baran');
+  if(!el) return;
+  function type(){
+    const cur=roles[ri];
+    if(!del){
+      el.textContent=cur.slice(0,++ci);
+      if(ci===cur.length){del=true;setTimeout(type,1800);return;}
+    } else {
+      el.textContent=cur.slice(0,--ci);
+      if(ci===0){del=false;ri=(ri+1)%roles.length;}
+    }
+    setTimeout(type,del?40:70);
+  }
+  type();
+})();
+
+/* ─── TYPEWRITER — Furkan ─── */
+(function(){
+  const roles=['// Tarih Araştırmacısı','// Jeopolitik Analisti','// Kodlayan Girişimci','// Bilişim Meraklısı','// Ortaklığa Açık'];
+  let ri=0,ci=0,del=false;
+  const el=document.getElementById('tw-furkan');
+  if(!el) return;
+  function type(){
+    const cur=roles[ri];
+    if(!del){
+      el.textContent=cur.slice(0,++ci);
+      if(ci===cur.length){del=true;setTimeout(type,1800);return;}
+    } else {
+      el.textContent=cur.slice(0,--ci);
+      if(ci===0){del=false;ri=(ri+1)%roles.length;}
+    }
+    setTimeout(type,del?40:70);
+  }
+  type();
+})();
+
+/* ─── SCROLL REVEAL ─── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
